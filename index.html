@@ -348,5 +348,21 @@
         ['filter-student', 'filter-company', 'filter-date-from', 'filter-date-to'].forEach(id => document.getElementById(id).addEventListener('input', renderTutorTable));
         document.getElementById('export-csv-btn').addEventListener('click', exportToCSV);
     </script>
+    <script>
+        
+  // Bloquear clic derecho
+  document.addEventListener("contextmenu", e => e.preventDefault());
+
+  // Bloquear teclas comunes para inspección
+  document.addEventListener("keydown", e => {
+    if (e.key === "F12" || 
+        (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) || 
+        (e.ctrlKey && e.key === "U")) {
+      e.preventDefault();
+    }
+  });
+</script>
+
 </body>
 </html>
+
