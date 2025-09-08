@@ -3,171 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuaderno de Prácticas FCT (Diseño Mejorado)</title>
+    <title>Plataforma de Gestión FCT</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Kalam:wght@300;400&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
         body {
-            font-family: 'Inter', sans-serif;
-            /* Fondo con textura de papel */
-            background-color: #f7f3ee;
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4c8b8' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            font-family: 'Manrope', sans-serif;
+            background-color: #f1f5f9;
         }
-
-        /* Estilo para el título principal con una fuente más caligráfica */
-        .font-handwriting {
-            font-family: 'Kalam', cursive;
-        }
-
         .hidden { display: none; }
-        .spinner { border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: #4f46e5; animation: spin 1s ease infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        .toast { position: fixed; bottom: 20px; right: 20px; transform: translateX(120%); padding: 12px 24px; border-radius: 8px; color: white; z-index: 50; transition: transform 0.4s ease-in-out; }
+        .spinner { border: 4px solid rgba(0, 0, 0, 0.1); width: 24px; height: 24px; border-radius: 50%; border-left-color: #fff; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .toast { position: fixed; bottom: 20px; right: 20px; transform: translateX(120%); padding: 16px 24px; border-radius: 8px; color: white; z-index: 50; transition: transform 0.4s ease-in-out; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); border: 1px solid rgba(255,255,255,0.2); }
         .toast.show { transform: translateX(0); }
-
-        /* Estilo para simular las anillas del cuaderno */
-        .notebook-rings {
-            background-image:
-                radial-gradient(circle at 3px 6px, #9ca3af 3px, transparent 3px),
-                radial-gradient(circle at 3px 6px, #e5e7eb 4px, transparent 4px);
-            background-size: 100% 30px;
-            background-position: left top;
-            background-repeat: repeat-y;
-        }
     </style>
 </head>
-<body class="text-slate-800">
+<body class="text-slate-900">
 
-    <div id="app" class="max-w-6xl mx-auto p-4 md:p-8">
-        
+    <div id="app">
         <div id="loading-view" class="flex flex-col items-center justify-center min-h-screen">
-            <div class="spinner"></div>
-            <p class="mt-4 text-slate-500">Cargando cuaderno...</p>
+            <div class="spinner !w-12 !h-12 !border-4 !border-slate-300 !border-l-slate-800"></div>
+            <p class="mt-4 text-slate-500 font-semibold">Cargando plataforma...</p>
         </div>
 
-        <!-- Vista de Selección de Rol (Landing Page) -->
-        <div id="role-selection-view" class="hidden min-h-[80vh] flex items-center justify-center">
-            <div class="w-full max-w-lg text-center">
-                 <header class="mb-10">
-                    <i class="fas fa-book-open text-5xl text-indigo-600"></i>
-                    <h1 class="font-handwriting text-5xl font-bold text-slate-800 mt-4">Cuaderno de Prácticas</h1>
-                    <p class="text-slate-500 mt-2 text-lg">Reporta y gestiona tus actividades de FCT de forma sencilla.</p>
-                </header>
-                <div class="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-slate-200">
-                    <h2 class="text-xl font-semibold mb-6 text-slate-700">Elige tu perfil para continuar</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <button id="select-student-btn" class="group w-full bg-indigo-600 text-white font-semibold py-4 px-4 rounded-xl hover:bg-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1">
-                            <i class="fas fa-user-graduate mr-2"></i> Soy Alumno
+        <!-- LANDING PAGE CON IMAGEN DE FONDO -->
+        <div id="landing-view" class="hidden min-h-screen bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1497032628192-86f99d791ba7?q=80&w=2070&auto=format&fit=crop');">
+            <div class="min-h-screen flex items-center justify-center bg-black/50 p-4">
+                <div class="w-full max-w-lg text-center bg-white/10 backdrop-blur-xl border border-white/20 p-8 md:p-12 rounded-3xl shadow-2xl">
+                    <header class="mb-8">
+                        <div class="inline-block p-4 bg-slate-800 rounded-xl mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                        </div>
+                        <h1 class="text-4xl md:text-5xl font-extrabold text-white">Plataforma FCT</h1>
+                        <p class="text-white/80 mt-2 text-lg">La herramienta definitiva para el seguimiento de prácticas.</p>
+                    </header>
+                    <div class="space-y-4">
+                        <button id="select-student-btn" class="group w-full bg-white text-slate-900 font-bold py-4 px-4 rounded-xl hover:bg-slate-200 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                            <span class="flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg> Entrar como Alumno</span>
                         </button>
-                        <button id="select-tutor-btn" class="group w-full bg-slate-800 text-white font-semibold py-4 px-4 rounded-xl hover:bg-slate-900 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1">
-                            <i class="fas fa-user-tie mr-2"></i> Soy Tutor
+                        <button id="select-tutor-btn" class="group w-full bg-slate-800 text-white font-bold py-4 px-4 rounded-xl hover:bg-slate-900 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                            <span class="flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Acceder como Tutor</span>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Contenedor principal con diseño de cuaderno -->
-        <div id="main-content-view" class="hidden">
-            <div class="grid grid-cols-12 gap-6">
-                <!-- Barra lateral de anillas -->
-                <div class="col-span-1 notebook-rings"></div>
-                
-                <!-- Contenido de la página -->
-                <div class="col-span-11 bg-white rounded-r-2xl shadow-2xl border border-slate-200 p-8">
-                    
-                    <!-- Vista del Alumno -->
-                    <div id="student-view">
-                        <header class="flex items-center justify-between mb-8 pb-4 border-b-2 border-dashed">
-                            <div>
-                                <h1 class="text-3xl font-bold text-slate-800">Registro Diario</h1>
-                                <p class="text-slate-500">Completa tu parte de actividad de hoy.</p>
-                            </div>
-                            <button id="student-back-btn" class="text-sm text-slate-600 hover:text-indigo-600 font-semibold"><i class="fas fa-arrow-left mr-1"></i> Volver</button>
-                        </header>
-                        <form id="practice-form" class="space-y-6">
-                            <!-- ... (El formulario del alumno se mantiene igual en estructura) ... -->
-                             <div class="grid md:grid-cols-2 gap-6">
-                                <label class="block">
-                                    <span class="font-semibold text-slate-700">Nombre del Alumno</span>
-                                    <input type="text" id="student-name" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition" required>
-                                </label>
-                                <label class="block">
-                                    <span class="font-semibold text-slate-700">Empresa / Entidad</span>
-                                    <input type="text" id="company-name" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition" required>
-                                </label>
-                            </div>
-                            <div>
-                                <label class="block">
-                                    <span class="font-semibold text-slate-700">Fecha</span>
-                                    <input type="date" id="practice-date" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition" required>
-                                </label>
-                            </div>
-                            
-                            <div class="relative flex items-start bg-slate-50 p-4 rounded-lg border">
-                                <div class="flex h-6 items-center"><input id="absence-checkbox" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"></div>
-                                <div class="ml-3 text-sm leading-6"><label for="absence-checkbox" class="font-medium text-gray-900">No he podido asistir</label><p class="text-gray-500">Marca esta casilla si has faltado y rellena el motivo.</p></div>
-                            </div>
-                            
-                            <div id="attendance-fields">
-                                <div class="grid md:grid-cols-2 gap-6">
-                                    <label class="block"><span class="font-semibold text-slate-700">Hora de Entrada</span><input type="time" id="start-time" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition"></label>
-                                    <label class="block"><span class="font-semibold text-slate-700">Hora de Salida</span><input type="time" id="end-time" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition"></label>
-                                </div>
-                                <div class="mt-6"><label class="block"><span class="font-semibold text-slate-700">Actividad Realizada / Observaciones</span><textarea id="activity-description" rows="4" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition"></textarea></label></div>
-                            </div>
 
-                            <div id="absence-fields" class="hidden">
-                                 <label class="block"><span class="font-semibold text-slate-700">Motivo de la Ausencia</span><textarea id="absence-reason" rows="3" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition" placeholder="Ej: Cita médica, indisposición..."></textarea></label>
-                                 <label class="block mt-4"><span class="font-semibold text-slate-700">Adjuntar Justificante (Opcional)</span><input type="file" id="justification-file" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition"/><p id="file-upload-status" class="text-xs text-slate-500 mt-1"></p></label>
-                            </div>
-
-                            <div class="flex justify-end items-center pt-6 border-t">
-                                <span class="text-xl font-bold mr-6 text-slate-700">Horas: <span id="hours-computed" class="text-indigo-600">0.00</span></span>
-                                <button type="submit" id="submit-button" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center">
-                                    <span id="submit-button-text"><i class="fas fa-check mr-2"></i> Guardar Parte</span>
-                                    <div id="submit-spinner" class="spinner w-5 h-5 hidden" style="border-left-color: white; border-width: 2px;"></div>
-                                </button>
-                            </div>
-                        </form>
+        <!-- VISTA PRINCIPAL DE LA APLICACIÓN -->
+        <div id="main-app-view" class="hidden max-w-7xl mx-auto p-4 md:p-8">
+            <div id="student-view" class="hidden">
+                 <header class="flex items-center justify-between mb-8 pb-4">
+                    <div class="flex items-center gap-4"><div class="p-3 bg-slate-800 rounded-lg"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div><div><h1 class="text-3xl font-bold text-slate-800">Reporte Diario</h1><p class="text-slate-500">Completa tu parte de actividad de hoy.</p></div></div>
+                    <button id="student-back-btn" class="text-sm text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> Volver</button>
+                </header>
+                <form id="practice-form" class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200 space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <label class="block"><span class="font-semibold text-slate-700">Nombre del Alumno</span><input type="text" id="student-name" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-200" required></label>
+                        <label class="block"><span class="font-semibold text-slate-700">Empresa / Entidad</span><input type="text" id="company-name" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-200" required></label>
                     </div>
-
-                    <!-- Vista del Tutor -->
-                    <div id="tutor-view" class="hidden">
-                         <header class="flex items-center justify-between mb-8 pb-4 border-b-2 border-dashed">
-                            <div><h1 class="text-3xl font-bold text-slate-800">Panel del Tutor</h1><p class="text-slate-500">Visualiza y gestiona los partes de actividad.</p></div>
-                            <button id="tutor-back-btn" class="text-sm text-slate-600 hover:text-indigo-600 font-semibold"><i class="fas fa-arrow-left mr-1"></i> Volver</button>
-                        </header>
-                        <!-- ... (La vista del tutor se mantiene igual en estructura pero hereda los nuevos estilos) ... -->
-                        <div class="bg-slate-50/70 p-4 rounded-xl border mb-6">
-                            <div class="grid md:grid-cols-4 gap-4">
-                                <input type="text" id="filter-student" placeholder="Buscar por alumno..." class="rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-200">
-                                <input type="text" id="filter-company" placeholder="Buscar por empresa..." class="rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-200">
-                                <input type="date" id="filter-date-from" class="rounded-lg border-slate-300 text-slate-500 focus:border-indigo-500 focus:ring-indigo-200">
-                                <input type="date" id="filter-date-to" class="rounded-lg border-slate-300 text-slate-500 focus:border-indigo-500 focus:ring-indigo-200">
-                            </div>
-                             <div class="flex justify-between items-center mt-4 pt-4 border-t">
-                                <div><span class="text-sm font-semibold text-slate-600">Registros: <b id="record-count" class="text-indigo-600">0</b></span><span class="text-sm font-semibold ml-4 text-slate-600">Horas Totales: <b id="total-hours" class="text-indigo-600">0.00</b></span></div>
-                                <button id="export-csv-btn" class="bg-emerald-600 text-white text-sm font-bold py-2 px-4 rounded-lg hover:bg-emerald-700 transition-all shadow hover:shadow-md transform hover:-translate-y-0.5"><i class="fas fa-file-csv mr-2"></i> Exportar CSV</button>
-                            </div>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left">
-                                <thead class="bg-slate-100 text-xs text-slate-700 uppercase rounded-t-lg">
-                                    <tr><th scope="col" class="px-6 py-3 rounded-tl-lg">Fecha</th><th scope="col" class="px-6 py-3">Alumno</th><th scope="col" class="px-6 py-3">Empresa</th><th scope="col" class="px-6 py-3">Entrada/Salida</th><th scope="col" class="px-6 py-3">Horas</th><th scope="col" class="px-6 py-3">Actividad/Motivo</th><th scope="col" class="px-6 py-3 rounded-tr-lg">Justificante</th></tr>
-                                </thead>
-                                <tbody id="records-tbody">
-                                    <tr id="tutor-loading-row"><td colspan="7" class="text-center p-8"><div class="spinner mx-auto"></div></td></tr>
-                                    <tr id="tutor-no-data-row" class="hidden"><td colspan="7" class="text-center p-8 text-slate-500">Aún no hay ningún parte registrado.</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div><label class="block"><span class="font-semibold text-slate-700">Fecha</span><input type="date" id="practice-date" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-200" required></label></div>
+                    <div class="relative flex items-start bg-slate-50 p-4 rounded-lg border">
+                        <div class="flex h-6 items-center"><input id="absence-checkbox" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"></div>
+                        <div class="ml-3 text-sm leading-6"><label for="absence-checkbox" class="font-medium text-gray-900">No he podido asistir</label><p class="text-gray-500">Marca esta casilla si has faltado.</p></div>
                     </div>
-
+                    <div id="attendance-fields">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <label class="block"><span class="font-semibold text-slate-700">Hora de Entrada</span><input type="time" id="start-time" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-200"></label>
+                            <label class="block"><span class="font-semibold text-slate-700">Hora de Salida</span><input type="time" id="end-time" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-200"></label>
+                        </div>
+                        <div class="mt-6"><label class="block"><span class="font-semibold text-slate-700">Actividad Realizada</span><textarea id="activity-description" rows="4" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-200"></textarea></label></div>
+                    </div>
+                    <div id="absence-fields" class="hidden">
+                         <label class="block"><span class="font-semibold text-slate-700">Motivo de la Ausencia</span><textarea id="absence-reason" rows="3" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-200" placeholder="Ej: Cita médica..."></textarea></label>
+                         <label class="block mt-4"><span class="font-semibold text-slate-700">Adjuntar Justificante</span><input type="file" id="justification-file" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"/><p id="file-upload-status" class="text-xs text-slate-500 mt-1"></p></label>
+                    </div>
+                    <div class="flex justify-end items-center pt-6 border-t">
+                        <span class="text-xl font-bold mr-6 text-slate-700">Horas: <span id="hours-computed" class="text-indigo-800">0.00</span></span>
+                        <button type="submit" id="submit-button" class="bg-slate-800 text-white font-bold py-3 px-8 rounded-lg hover:bg-slate-900 transition-all shadow-md flex items-center">
+                            <span id="submit-button-text">Guardar Reporte</span>
+                            <div id="submit-spinner" class="spinner ml-2 hidden"></div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div id="tutor-view" class="hidden">
+                <header class="flex items-center justify-between mb-8 pb-4">
+                    <div class="flex items-center gap-4"><div class="p-3 bg-slate-800 rounded-lg"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div><h1 class="text-3xl font-bold text-slate-800">Panel de Tutor</h1><p id="tutor-logged-in-as" class="text-slate-500">Sesión iniciada.</p></div></div>
+                    <button id="logout-btn" class="bg-slate-800 text-white text-sm font-bold py-2 px-4 rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>Cerrar Sesión</button>
+                </header>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-lg flex items-center gap-4"><div class="p-3 bg-sky-100 text-sky-600 rounded-lg"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1 2 2Zm0 0a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v16a2 2 0 0 0-2 2Z"/><path d="M6 18h12"/><path d="M6 14h12"/><path d="M6 10h12"/><path d="M6 6h12"/></svg></div><div><p class="text-sm text-slate-500">Total Registros</p><p id="stat-total-records" class="text-2xl font-bold">0</p></div></div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-lg flex items-center gap-4"><div class="p-3 bg-amber-100 text-amber-600 rounded-lg"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><div><p class="text-sm text-slate-500">Total Horas</p><p id="stat-total-hours" class="text-2xl font-bold">0.00</p></div></div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-lg flex items-center gap-4"><div class="p-3 bg-rose-100 text-rose-600 rounded-lg"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13a6 6 0 0 1-6 6 6 6 0 0 1-6-6 6 6 0 0 1 6-6V2M6 8.35a6 6 0 0 0 0 7.3"/><path d="M22 6V2h-4"/><path d="m16.5 7.5 5.5-5.5"/></svg></div><div><p class="text-sm text-slate-500">Total Ausencias</p><p id="stat-total-absences" class="text-2xl font-bold">0</p></div></div>
                 </div>
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-slate-200">
+                    <div class="grid md:grid-cols-4 gap-4 mb-4">
+                        <input type="text" id="filter-student" placeholder="Buscar por alumno..." class="rounded-lg border-slate-300 focus:border-indigo-500">
+                        <input type="text" id="filter-company" placeholder="Buscar por empresa..." class="rounded-lg border-slate-300 focus:border-indigo-500">
+                        <input type="date" id="filter-date-from" class="rounded-lg border-slate-300 text-slate-500">
+                        <input type="date" id="filter-date-to" class="rounded-lg border-slate-300 text-slate-500">
+                    </div>
+                     <div class="flex justify-end items-center mt-4 pt-4 border-t">
+                        <button id="export-csv-btn" class="bg-emerald-600 text-white text-sm font-bold py-2 px-4 rounded-lg hover:bg-emerald-700 transition-all flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg> Exportar</button>
+                    </div>
+                    <div class="overflow-x-auto mt-4"><table class="w-full text-sm text-left"><thead class="bg-slate-100 text-xs text-slate-700 uppercase"><tr><th class="px-6 py-3">Fecha</th><th class="px-6 py-3">Alumno</th><th class="px-6 py-3">Empresa</th><th class="px-6 py-3">Entrada/Salida</th><th class="px-6 py-3">Horas</th><th class="px-6 py-3">Actividad/Motivo</th><th class="px-6 py-3">Justificante</th></tr></thead><tbody id="records-tbody"><tr id="tutor-loading-row"><td colspan="7" class="text-center p-8"><div class="spinner !border-slate-300 !border-l-slate-800 mx-auto"></div></td></tr><tr id="tutor-no-data-row" class="hidden"><td colspan="7" class="text-center p-8 text-slate-500">Aún no hay partes registrados.</td></tr></tbody></table></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tutor-auth-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div class="bg-white w-full max-w-md p-8 rounded-2xl shadow-2xl relative">
+                 <button id="close-auth-modal" class="absolute top-4 right-4 text-slate-400 hover:text-slate-800"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg></button>
+                <h2 class="text-2xl font-bold text-center mb-6">Acceso de Tutor</h2>
+                <form id="login-form">
+                    <input type="email" id="login-email" placeholder="Email de tutor" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-200" required>
+                    <input type="password" id="login-password" placeholder="Contraseña" class="mt-3 w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-200" required>
+                    <button type="submit" class="mt-4 w-full bg-slate-800 text-white font-semibold py-3 px-4 rounded-lg hover:bg-slate-900 transition-colors flex items-center justify-center">
+                        <span id="login-btn-text">Entrar</span><div id="login-spinner" class="spinner hidden ml-2"></div>
+                    </button>
+                </form>
+                <p class="text-xs text-slate-400 mt-4 text-center">Solo los tutores pre-autorizados pueden acceder.</p>
             </div>
         </div>
     </div>
@@ -176,58 +132,72 @@
     
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-        // --- CONFIGURACIÓN DE SUPABASE ---
         const SUPABASE_URL = 'https://belsjuyzcdffyfgleoco.supabase.co'; 
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJlbHNqdXl6Y2RmZnlmZ2xlb2NvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTczMjYxMzEsImV4cCI6MjA3MjkwMjEzMX0.zeOW4x9veTddouww3FLe6z7d77X3RdDLB9-hNHD6n5w';
-
-        // --- INICIALIZACIÓN Y LÓGICA ---
+        
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let allRecords = [];
         let recordsSubscription = null;
 
-        // --- SELECTORES DOM (simplificados) ---
         const DOMElements = {
             loadingView: document.getElementById('loading-view'),
-            roleSelectionView: document.getElementById('role-selection-view'),
-            mainContentView: document.getElementById('main-content-view'),
+            landingView: document.getElementById('landing-view'),
+            mainAppView: document.getElementById('main-app-view'),
             studentView: document.getElementById('student-view'),
             tutorView: document.getElementById('tutor-view'),
-            // ... (el resto de selectores son los mismos)
+            tutorAuthModal: document.getElementById('tutor-auth-modal'),
+            toast: document.getElementById('toast-notification'),
         };
 
-        // --- LÓGICA DE NAVEGACIÓN Y VISTAS (con nuevo diseño) ---
         const switchView = (view) => {
-            if (!SUPABASE_URL) return;
-            DOMElements.loadingView.classList.add('hidden');
-            DOMElements.roleSelectionView.classList.add('hidden');
-            DOMElements.mainContentView.classList.add('hidden');
-            
-            if (view === 'role-selection-view') {
-                DOMElements.roleSelectionView.classList.remove('hidden');
-            } else {
-                DOMElements.mainContentView.classList.remove('hidden');
-                DOMElements.studentView.classList.add('hidden');
-                DOMElements.tutorView.classList.add('hidden');
+            Object.values(DOMElements).forEach(el => el.classList.add('hidden'));
+            if(view === 'student-view' || view === 'tutor-view'){
+                DOMElements.mainAppView.classList.remove('hidden');
                 document.getElementById(view).classList.remove('hidden');
+            } else if (view === 'tutor-auth-modal' || view === 'landing-view') {
+                 DOMElements.landingView.classList.remove('hidden');
+                 if(view === 'tutor-auth-modal') {
+                    DOMElements.tutorAuthModal.classList.remove('hidden');
+                 }
+            } else {
+                 document.getElementById(view).classList.remove('hidden');
             }
         };
-
-        const showRoleSelection = () => {
-             if (recordsSubscription) {
-                supabase.removeChannel(recordsSubscription);
-                recordsSubscription = null;
+        
+        supabase.auth.onAuthStateChange(async (event, session) => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                document.getElementById('tutor-logged-in-as').textContent = `Sesión iniciada como: ${user.email}`;
+                DOMElements.tutorAuthModal.classList.add('hidden');
+                switchView('tutor-view');
+                listenToRecords();
+            } else {
+                switchView('landing-view');
             }
-            switchView('role-selection-view');
+        });
+
+        const setButtonLoadingState = (formId, textId, spinnerId, isLoading) => {
+            const form = document.getElementById(formId);
+            const button = form.querySelector('button');
+            button.disabled = isLoading;
+            document.getElementById(textId).style.display = isLoading ? 'none' : 'inline';
+            document.getElementById(spinnerId).style.display = isLoading ? 'inline-block' : 'none';
         };
 
-        // --- El resto del script es funcionalmente idéntico a la versión anterior ---
-        // ... (pegado aquí para que el archivo sea completo y funcional)
-        const showStudentView = () => switchView('student-view');
-        const showTutorView = () => {
-            switchView('tutor-view');
-            listenToRecords();
-        };
+        async function handleTutorLogin(e) {
+            e.preventDefault();
+            setButtonLoadingState('login-form', 'login-btn-text', 'login-spinner', true);
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) showToast(`Error: ${error.message}`, 'bg-red-500');
+            setButtonLoadingState('login-form', 'login-btn-text', 'login-spinner', false);
+        }
+        
+        async function handleLogout() {
+            await supabase.auth.signOut();
+        }
+
         const practiceForm = document.getElementById('practice-form');
         const absenceCheckbox = document.getElementById('absence-checkbox');
         const attendanceFields = document.getElementById('attendance-fields');
@@ -235,136 +205,74 @@
         const startTime = document.getElementById('start-time');
         const endTime = document.getElementById('end-time');
         const hoursComputed = document.getElementById('hours-computed');
-        const recordsTbody = document.getElementById('records-tbody');
-        const tutorLoadingRow = document.getElementById('tutor-loading-row');
-        const tutorNoDataRow = document.getElementById('tutor-no-data-row');
-        const toast = document.getElementById('toast-notification');
         const submitButton = document.getElementById('submit-button');
         const submitButtonText = document.getElementById('submit-button-text');
         const submitSpinner = document.getElementById('submit-spinner');
-
-        let sessionId = localStorage.getItem('supabase_session_id');
-        if (!sessionId) {
-            sessionId = `anon_${Date.now()}_${Math.random().toString(36).substring(2)}`;
-            localStorage.setItem('supabase_session_id', sessionId);
-        }
-
-        const initStudentView = () => {
-            document.getElementById('practice-date').value = new Date().toISOString().slice(0, 10);
-            absenceCheckbox.addEventListener('change', toggleAbsenceFields);
-            practiceForm.addEventListener('submit', handleFormSubmit);
-            [startTime, endTime].forEach(el => el.addEventListener('input', computeHours));
-            toggleAbsenceFields();
-        };
+        let sessionId = localStorage.getItem('supabase_session_id') || `anon_${Date.now()}_${Math.random().toString(36).substring(2)}`;
+        localStorage.setItem('supabase_session_id', sessionId);
 
         const toggleAbsenceFields = () => {
-            const isAbsent = absenceCheckbox.checked;
-            attendanceFields.classList.toggle('hidden', isAbsent);
-            absenceFields.classList.toggle('hidden', !isAbsent);
+            attendanceFields.classList.toggle('hidden', absenceCheckbox.checked);
+            absenceFields.classList.toggle('hidden', !absenceCheckbox.checked);
             computeHours();
         };
 
         const computeHours = () => {
-            if (absenceCheckbox.checked) {
-                hoursComputed.textContent = '0.00';
-                return;
-            }
-            const start = startTime.value;
-            const end = endTime.value;
-            if (start && end) {
-                const startMinutes = parseInt(start.split(':')[0]) * 60 + parseInt(start.split(':')[1]);
-                const endMinutes = parseInt(end.split(':')[0]) * 60 + parseInt(end.split(':')[1]);
-                const diff = Math.max(0, endMinutes - startMinutes);
+            if (absenceCheckbox.checked) { hoursComputed.textContent = '0.00'; return; }
+            if (startTime.value && endTime.value) {
+                const start = new Date(`1970-01-01T${startTime.value}`);
+                const end = new Date(`1970-01-01T${endTime.value}`);
+                const diff = Math.max(0, (end - start) / (1000 * 60));
                 hoursComputed.textContent = (diff / 60).toFixed(2);
             } else {
                 hoursComputed.textContent = '0.00';
             }
         };
-
-        const setSubmitButtonState = (isLoading) => {
-            submitButton.disabled = isLoading;
-            submitButtonText.classList.toggle('hidden', isLoading);
-            submitSpinner.classList.toggle('hidden', !isLoading);
-        };
         
-        const handleFormSubmit = async (e) => {
+        async function handleFormSubmit(e) {
             e.preventDefault();
-            setSubmitButtonState(true);
-
+            setButtonLoadingState('practice-form', 'submit-button-text', 'submit-spinner', true);
             const studentName = document.getElementById('student-name').value.trim();
             const companyName = document.getElementById('company-name').value.trim();
             const practiceDate = document.getElementById('practice-date').value;
-
             if (!studentName || !companyName || !practiceDate) {
                 showToast('Por favor, completa nombre, empresa y fecha.', 'bg-red-500');
-                setSubmitButtonState(false);
+                setButtonLoadingState('practice-form', 'submit-button-text', 'submit-spinner', false);
                 return;
             }
-            
             let justificationPath = null;
             const fileInput = document.getElementById('justification-file');
-            const fileStatusEl = document.getElementById('file-upload-status');
-
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
                 const filePath = `justificantes/${sessionId}_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.\-_]/g, '')}`;
-                fileStatusEl.textContent = `Subiendo ${file.name}...`;
-                
-                const { error: uploadError } = await supabase.storage
-                    .from('justificantes')
-                    .upload(filePath, file);
-
+                const { error: uploadError } = await supabase.storage.from('justificantes').upload(filePath, file);
                 if (uploadError) {
-                    console.error("Error subiendo archivo:", uploadError);
                     showToast('Error al subir el justificante.', 'bg-red-500');
-                    fileStatusEl.textContent = 'Error al subir el archivo.';
-                    setSubmitButtonState(false);
+                    setButtonLoadingState('practice-form', 'submit-button-text', 'submit-spinner', false);
                     return;
                 }
                 justificationPath = filePath;
-                fileStatusEl.textContent = 'Archivo subido con éxito.';
             }
-
-            const isAbsent = absenceCheckbox.checked;
-            const record = {
-                studentName, companyName, practiceDate, isAbsent,
-                startTime: isAbsent ? null : startTime.value,
-                endTime: isAbsent ? null : endTime.value,
-                activity: isAbsent ? null : document.getElementById('activity-description').value.trim(),
-                absenceReason: isAbsent ? document.getElementById('absence-reason').value.trim() : null,
-                hours: parseFloat(hoursComputed.textContent) || 0,
-                justification_path: justificationPath,
-                user_id: sessionId 
-            };
-            
+            const record = { studentName, companyName, practiceDate, isAbsent: absenceCheckbox.checked, startTime: absenceCheckbox.checked ? null : startTime.value, endTime: absenceCheckbox.checked ? null : endTime.value, activity: absenceCheckbox.checked ? null : document.getElementById('activity-description').value.trim(), absenceReason: absenceCheckbox.checked ? document.getElementById('absence-reason').value.trim() : null, hours: parseFloat(hoursComputed.textContent) || 0, justification_path: justificationPath, user_id: sessionId };
             const { error } = await supabase.from('practicas').insert([record]);
-
             if (error) {
-                console.error("Error guardando el parte:", error);
                 showToast('Error al guardar. Inténtalo de nuevo.', 'bg-red-500');
             } else {
-                showToast('Parte guardado con éxito', 'bg-emerald-600');
+                showToast('Reporte guardado con éxito', 'bg-emerald-600');
                 practiceForm.reset();
                 document.getElementById('practice-date').value = new Date().toISOString().slice(0, 10);
                 toggleAbsenceFields();
             }
-            setSubmitButtonState(false);
-        };
-
-        const initTutorView = () => {
-            ['filter-student', 'filter-company', 'filter-date-from', 'filter-date-to'].forEach(id => {
-                document.getElementById(id).addEventListener('input', renderTutorTable);
-            });
-            document.getElementById('export-csv-btn').addEventListener('click', exportToCSV);
+            setButtonLoadingState('practice-form', 'submit-button-text', 'submit-spinner', false);
         };
         
+        const recordsTbody = document.getElementById('records-tbody');
+        const tutorLoadingRow = document.getElementById('tutor-loading-row');
+        const tutorNoDataRow = document.getElementById('tutor-no-data-row');
+
         async function fetchAndRender() {
             const { data, error } = await supabase.from('practicas').select('*').order('practiceDate', { ascending: false });
-            if (error) {
-                console.error("Error cargando datos:", error);
-                recordsTbody.innerHTML = '<tr><td colspan="7" class="text-center p-8 text-red-500">Error al cargar los datos.</td></tr>';
-                return;
-            }
+            if (error) { recordsTbody.innerHTML = '<tr><td colspan="7" class="text-center p-8 text-red-500">Error al cargar los datos.</td></tr>'; return; }
             allRecords = data;
             renderTutorTable();
         }
@@ -374,65 +282,35 @@
             tutorNoDataRow.classList.add('hidden');
             recordsTbody.innerHTML = '';
             recordsTbody.appendChild(tutorLoadingRow);
-
             fetchAndRender();
-
             if (recordsSubscription) supabase.removeChannel(recordsSubscription);
-            recordsSubscription = supabase.channel('public:practicas')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'practicas' }, (payload) => fetchAndRender())
-                .subscribe();
+            recordsSubscription = supabase.channel('public:practicas').on('postgres_changes', { event: '*', schema: 'public', table: 'practicas' }, (payload) => fetchAndRender()).subscribe();
         };
-        
+
         const renderTutorTable = () => {
-            const studentFilter = document.getElementById('filter-student').value.toLowerCase();
-            const companyFilter = document.getElementById('filter-company').value.toLowerCase();
-            const fromFilter = document.getElementById('filter-date-from').value;
-            const toFilter = document.getElementById('filter-date-to').value;
-
-            const filteredRecords = allRecords.filter(r => 
-                r.studentName.toLowerCase().includes(studentFilter) &&
-                r.companyName.toLowerCase().includes(companyFilter) &&
-                (!fromFilter || r.practiceDate >= fromFilter) && 
-                (!toFilter || r.practiceDate <= toFilter)
-            );
-
+            const filters = { student: document.getElementById('filter-student').value.toLowerCase(), company: document.getElementById('filter-company').value.toLowerCase(), from: document.getElementById('filter-date-from').value, to: document.getElementById('filter-date-to').value, };
+            const filteredRecords = allRecords.filter(r => r.studentName.toLowerCase().includes(filters.student) && r.companyName.toLowerCase().includes(filters.company) && (!filters.from || r.practiceDate >= filters.from) && (!filters.to || r.practiceDate <= filters.to));
             tutorLoadingRow.classList.add('hidden');
             recordsTbody.innerHTML = '';
-
-            if (filteredRecords.length === 0) {
-                tutorNoDataRow.classList.remove('hidden');
-                recordsTbody.appendChild(tutorNoDataRow);
-            }
-            
+            if (filteredRecords.length === 0) { tutorNoDataRow.classList.remove('hidden'); recordsTbody.appendChild(tutorNoDataRow); }
             let totalHours = 0;
+            let totalAbsences = 0;
             filteredRecords.forEach(r => {
                 totalHours += r.hours;
+                if (r.isAbsent) totalAbsences++;
                 const tr = document.createElement('tr');
                 tr.className = "bg-white border-b hover:bg-slate-50/70 transition-colors";
-                
-                const absenceClass = r.isAbsent ? 'text-red-600' : '';
-                const activityText = r.isAbsent ? `<span class="font-semibold">Ausencia:</span> ${r.absenceReason || 'Sin motivo'}` : r.activity;
-                
                 let justificationLink = '---';
-                if(r.justification_path) {
+                if (r.justification_path) {
                     const { data } = supabase.storage.from('justificantes').getPublicUrl(r.justification_path);
-                    if(data && data.publicUrl) justificationLink = `<a href="${data.publicUrl}" target="_blank" class="text-indigo-600 hover:underline font-semibold">Ver archivo</a>`;
+                    if (data && data.publicUrl) justificationLink = `<a href="${data.publicUrl}" target="_blank" class="text-indigo-600 hover:underline font-semibold">Ver archivo</a>`;
                 }
-
-                tr.innerHTML = `
-                    <td class="px-6 py-4 font-medium text-slate-900 ${absenceClass}">${r.practiceDate}</td>
-                    <td class="px-6 py-4">${r.studentName}</td>
-                    <td class="px-6 py-4">${r.companyName}</td>
-                    <td class="px-6 py-4 ${absenceClass}">${r.isAbsent ? 'N/A' : `${r.startTime || ''} - ${r.endTime || ''}`}</td>
-                    <td class="px-6 py-4 font-semibold text-slate-800 ${absenceClass}">${r.hours.toFixed(2)}</td>
-                    <td class="px-6 py-4 max-w-xs text-slate-600 truncate" title="${r.isAbsent ? r.absenceReason : r.activity}">${activityText}</td>
-                    <td class="px-6 py-4">${justificationLink}</td>
-                `;
+                tr.innerHTML = `<td class="px-6 py-4 font-medium ${r.isAbsent ? 'text-red-600' : ''}">${r.practiceDate}</td><td class="px-6 py-4">${r.studentName}</td><td class="px-6 py-4">${r.companyName}</td><td class="px-6 py-4 ${r.isAbsent ? 'text-red-600' : ''}">${r.isAbsent ? 'N/A' : `${r.startTime || ''} - ${r.endTime || ''}`}</td><td class="px-6 py-4 font-semibold ${r.isAbsent ? 'text-red-600' : ''}">${r.hours.toFixed(2)}</td><td class="px-6 py-4 max-w-xs truncate">${r.isAbsent ? `<span class="font-semibold">Ausencia:</span> ${r.absenceReason || 'Sin motivo'}` : r.activity}</td><td class="px-6 py-4">${justificationLink}</td>`;
                 recordsTbody.appendChild(tr);
             });
-
-            document.getElementById('record-count').textContent = filteredRecords.length;
-            document.getElementById('total-hours').textContent = totalHours.toFixed(2);
+            document.getElementById('stat-total-records').textContent = filteredRecords.length;
+            document.getElementById('stat-total-hours').textContent = totalHours.toFixed(2);
+            document.getElementById('stat-total-absences').textContent = totalAbsences;
         };
         
         const exportToCSV = () => {
@@ -454,23 +332,21 @@
             link.click();
             document.body.removeChild(link);
         };
-
-        const showToast = (message, className) => {
-            toast.textContent = message;
-            toast.className = `toast show ${className}`;
-            setTimeout(() => { toast.className = 'toast'; }, 3000);
-        };
-
-        document.getElementById('select-student-btn').addEventListener('click', showStudentView);
-        document.getElementById('select-tutor-btn').addEventListener('click', showTutorView);
-        document.getElementById('student-back-btn').addEventListener('click', showRoleSelection);
-        document.getElementById('tutor-back-btn').addEventListener('click', showRoleSelection);
-
-        if (SUPABASE_URL) {
-            initStudentView();
-            initTutorView();
-            setTimeout(() => switchView('role-selection-view'), 300);
-        }
+        const showToast = (message, className) => { DOMElements.toast.textContent = message; DOMElements.toast.className = `toast show ${className}`; setTimeout(() => { DOMElements.toast.className = 'toast'; }, 4000); };
+        
+        document.getElementById('select-student-btn').addEventListener('click', () => switchView('student-view'));
+        document.getElementById('select-tutor-btn').addEventListener('click', () => switchView('tutor-auth-modal'));
+        document.getElementById('close-auth-modal').addEventListener('click', () => switchView('landing-view'));
+        document.getElementById('student-back-btn').addEventListener('click', async () => { if(recordsSubscription) await supabase.removeChannel(recordsSubscription); switchView('landing-view'); });
+        document.getElementById('logout-btn').addEventListener('click', handleLogout);
+        document.getElementById('login-form').addEventListener('submit', handleTutorLogin);
+        document.getElementById('practice-date').value = new Date().toISOString().slice(0, 10);
+        absenceCheckbox.addEventListener('change', toggleAbsenceFields);
+        practiceForm.addEventListener('submit', handleFormSubmit);
+        [startTime, endTime].forEach(el => el.addEventListener('input', computeHours));
+        toggleAbsenceFields();
+        ['filter-student', 'filter-company', 'filter-date-from', 'filter-date-to'].forEach(id => document.getElementById(id).addEventListener('input', renderTutorTable));
+        document.getElementById('export-csv-btn').addEventListener('click', exportToCSV);
     </script>
 </body>
 </html>
