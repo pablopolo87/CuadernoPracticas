@@ -3,103 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuaderno de Prácticas FCT (Supabase)</title>
+    <title>Cuaderno de Prácticas FCT (Diseño Mejorado)</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Kalam:wght@300;400&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Fondo con textura de papel */
+            background-color: #f7f3ee;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4c8b8' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Estilo para el título principal con una fuente más caligráfica */
+        .font-handwriting {
+            font-family: 'Kalam', cursive;
+        }
+
         .hidden { display: none; }
-        .spinner { border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: #09f; animation: spin 1s ease infinite; }
+        .spinner { border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: #4f46e5; animation: spin 1s ease infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 8px; color: white; z-index: 50; opacity: 0; transition: opacity 0.3s, bottom 0.3s; }
-        .toast.show { opacity: 1; bottom: 40px; }
+        
+        .toast { position: fixed; bottom: 20px; right: 20px; transform: translateX(120%); padding: 12px 24px; border-radius: 8px; color: white; z-index: 50; transition: transform 0.4s ease-in-out; }
+        .toast.show { transform: translateX(0); }
+
+        /* Estilo para simular las anillas del cuaderno */
+        .notebook-rings {
+            background-image:
+                radial-gradient(circle at 3px 6px, #9ca3af 3px, transparent 3px),
+                radial-gradient(circle at 3px 6px, #e5e7eb 4px, transparent 4px);
+            background-size: 100% 30px;
+            background-position: left top;
+            background-repeat: repeat-y;
+        }
     </style>
 </head>
 <body class="text-slate-800">
 
-    <div id="app" class="max-w-5xl mx-auto p-4 md:p-6">
+    <div id="app" class="max-w-6xl mx-auto p-4 md:p-8">
+        
         <div id="loading-view" class="flex flex-col items-center justify-center min-h-screen">
             <div class="spinner"></div>
-            <p class="mt-4 text-slate-500">Conectando...</p>
+            <p class="mt-4 text-slate-500">Cargando cuaderno...</p>
         </div>
 
-        <div id="role-selection-view" class="hidden min-h-screen flex items-center justify-center">
-            <div class="w-full max-w-md text-center">
-                <header class="mb-8"><h1 class="text-3xl font-bold text-slate-900">Cuaderno de Prácticas</h1><p class="text-slate-500 mt-2">Gestiona y reporta tus prácticas de FCT</p></header>
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-xl font-semibold mb-6">¿Quién eres?</h2>
+        <!-- Vista de Selección de Rol (Landing Page) -->
+        <div id="role-selection-view" class="hidden min-h-[80vh] flex items-center justify-center">
+            <div class="w-full max-w-lg text-center">
+                 <header class="mb-10">
+                    <i class="fas fa-book-open text-5xl text-indigo-600"></i>
+                    <h1 class="font-handwriting text-5xl font-bold text-slate-800 mt-4">Cuaderno de Prácticas</h1>
+                    <p class="text-slate-500 mt-2 text-lg">Reporta y gestiona tus actividades de FCT de forma sencilla.</p>
+                </header>
+                <div class="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-slate-200">
+                    <h2 class="text-xl font-semibold mb-6 text-slate-700">Elige tu perfil para continuar</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <button id="select-student-btn" class="w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors">Soy Alumno</button>
-                        <button id="select-tutor-btn" class="w-full bg-slate-800 text-white font-semibold py-3 px-4 rounded-lg hover:bg-slate-900 transition-colors">Soy Tutor</button>
+                        <button id="select-student-btn" class="group w-full bg-indigo-600 text-white font-semibold py-4 px-4 rounded-xl hover:bg-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1">
+                            <i class="fas fa-user-graduate mr-2"></i> Soy Alumno
+                        </button>
+                        <button id="select-tutor-btn" class="group w-full bg-slate-800 text-white font-semibold py-4 px-4 rounded-xl hover:bg-slate-900 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1">
+                            <i class="fas fa-user-tie mr-2"></i> Soy Tutor
+                        </button>
                     </div>
                 </div>
-                <footer class="mt-8 text-sm text-slate-400"><p>Una herramienta para el seguimiento de la Formación en Centros de Trabajo.</p></footer>
             </div>
         </div>
+        
+        <!-- Contenedor principal con diseño de cuaderno -->
+        <div id="main-content-view" class="hidden">
+            <div class="grid grid-cols-12 gap-6">
+                <!-- Barra lateral de anillas -->
+                <div class="col-span-1 notebook-rings"></div>
+                
+                <!-- Contenido de la página -->
+                <div class="col-span-11 bg-white rounded-r-2xl shadow-2xl border border-slate-200 p-8">
+                    
+                    <!-- Vista del Alumno -->
+                    <div id="student-view">
+                        <header class="flex items-center justify-between mb-8 pb-4 border-b-2 border-dashed">
+                            <div>
+                                <h1 class="text-3xl font-bold text-slate-800">Registro Diario</h1>
+                                <p class="text-slate-500">Completa tu parte de actividad de hoy.</p>
+                            </div>
+                            <button id="student-back-btn" class="text-sm text-slate-600 hover:text-indigo-600 font-semibold"><i class="fas fa-arrow-left mr-1"></i> Volver</button>
+                        </header>
+                        <form id="practice-form" class="space-y-6">
+                            <!-- ... (El formulario del alumno se mantiene igual en estructura) ... -->
+                             <div class="grid md:grid-cols-2 gap-6">
+                                <label class="block">
+                                    <span class="font-semibold text-slate-700">Nombre del Alumno</span>
+                                    <input type="text" id="student-name" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition" required>
+                                </label>
+                                <label class="block">
+                                    <span class="font-semibold text-slate-700">Empresa / Entidad</span>
+                                    <input type="text" id="company-name" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition" required>
+                                </label>
+                            </div>
+                            <div>
+                                <label class="block">
+                                    <span class="font-semibold text-slate-700">Fecha</span>
+                                    <input type="date" id="practice-date" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition" required>
+                                </label>
+                            </div>
+                            
+                            <div class="relative flex items-start bg-slate-50 p-4 rounded-lg border">
+                                <div class="flex h-6 items-center"><input id="absence-checkbox" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"></div>
+                                <div class="ml-3 text-sm leading-6"><label for="absence-checkbox" class="font-medium text-gray-900">No he podido asistir</label><p class="text-gray-500">Marca esta casilla si has faltado y rellena el motivo.</p></div>
+                            </div>
+                            
+                            <div id="attendance-fields">
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <label class="block"><span class="font-semibold text-slate-700">Hora de Entrada</span><input type="time" id="start-time" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition"></label>
+                                    <label class="block"><span class="font-semibold text-slate-700">Hora de Salida</span><input type="time" id="end-time" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition"></label>
+                                </div>
+                                <div class="mt-6"><label class="block"><span class="font-semibold text-slate-700">Actividad Realizada / Observaciones</span><textarea id="activity-description" rows="4" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition"></textarea></label></div>
+                            </div>
 
-        <div id="student-view" class="hidden">
-            <header class="flex items-center justify-between mb-6 pb-4 border-b">
-                <div><h1 class="text-2xl font-bold">Registro Diario del Alumno</h1><p class="text-slate-500">Completa tu parte de actividad diaria.</p></div>
-                <button id="student-back-btn" class="text-sm text-slate-600 hover:text-slate-900">Cambiar Rol</button>
-            </header>
-            <form id="practice-form" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
-                <div class="grid md:grid-cols-2 gap-6">
-                    <label class="block"><span class="font-semibold">Nombre del Alumno</span><input type="text" id="student-name" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required></label>
-                    <label class="block"><span class="font-semibold">Empresa / Entidad</span><input type="text" id="company-name" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required></label>
-                </div>
-                <div><label class="block"><span class="font-semibold">Fecha</span><input type="date" id="practice-date" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required></label></div>
-                <div class="relative flex items-start">
-                    <div class="flex h-6 items-center"><input id="absence-checkbox" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"></div>
-                    <div class="ml-3 text-sm leading-6"><label for="absence-checkbox" class="font-medium text-gray-900">No he podido asistir</label><p class="text-gray-500">Marca esta casilla si has faltado.</p></div>
-                </div>
-                <div id="attendance-fields">
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <label class="block"><span class="font-semibold">Hora de Entrada</span><input type="time" id="start-time" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"></label>
-                        <label class="block"><span class="font-semibold">Hora de Salida</span><input type="time" id="end-time" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"></label>
+                            <div id="absence-fields" class="hidden">
+                                 <label class="block"><span class="font-semibold text-slate-700">Motivo de la Ausencia</span><textarea id="absence-reason" rows="3" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition" placeholder="Ej: Cita médica, indisposición..."></textarea></label>
+                                 <label class="block mt-4"><span class="font-semibold text-slate-700">Adjuntar Justificante (Opcional)</span><input type="file" id="justification-file" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition"/><p id="file-upload-status" class="text-xs text-slate-500 mt-1"></p></label>
+                            </div>
+
+                            <div class="flex justify-end items-center pt-6 border-t">
+                                <span class="text-xl font-bold mr-6 text-slate-700">Horas: <span id="hours-computed" class="text-indigo-600">0.00</span></span>
+                                <button type="submit" id="submit-button" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center">
+                                    <span id="submit-button-text"><i class="fas fa-check mr-2"></i> Guardar Parte</span>
+                                    <div id="submit-spinner" class="spinner w-5 h-5 hidden" style="border-left-color: white; border-width: 2px;"></div>
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="mt-6"><label class="block"><span class="font-semibold">Actividad Realizada / Observaciones</span><textarea id="activity-description" rows="4" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"></textarea></label></div>
-                </div>
-                <div id="absence-fields" class="hidden">
-                     <label class="block"><span class="font-semibold">Motivo de la Ausencia</span><textarea id="absence-reason" rows="3" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" placeholder="Ej: Cita médica, indisposición..."></textarea></label>
-                     <label class="block mt-4"><span class="font-semibold">Adjuntar Justificante (Opcional)</span><input type="file" id="justification-file" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/><p id="file-upload-status" class="text-xs text-slate-500 mt-1"></p></label>
-                </div>
-                <div class="flex justify-end items-center pt-4 border-t">
-                    <span class="text-lg font-bold mr-4">Horas: <span id="hours-computed">0.00</span></span>
-                    <button type="submit" id="submit-button" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center">
-                        <span id="submit-button-text">Guardar Parte</span>
-                        <div id="submit-spinner" class="spinner w-5 h-5 ml-2 hidden" style="border-left-color: white; border-width: 2px;"></div>
-                    </button>
-                </div>
-            </form>
-        </div>
 
-        <div id="tutor-view" class="hidden">
-            <header class="flex items-center justify-between mb-6 pb-4 border-b">
-                 <div><h1 class="text-2xl font-bold">Panel de Control del Tutor</h1><p class="text-slate-500">Visualiza, filtra y exporta los partes de actividad.</p></div>
-                <button id="tutor-back-btn" class="text-sm text-slate-600 hover:text-slate-900">Cambiar Rol</button>
-            </header>
-            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6">
-                <div class="grid md:grid-cols-4 gap-4">
-                    <input type="text" id="filter-student" placeholder="Buscar por alumno..." class="rounded-lg border-slate-300">
-                    <input type="text" id="filter-company" placeholder="Buscar por empresa..." class="rounded-lg border-slate-300">
-                    <input type="date" id="filter-date-from" class="rounded-lg border-slate-300 text-slate-500">
-                    <input type="date" id="filter-date-to" class="rounded-lg border-slate-300 text-slate-500">
+                    <!-- Vista del Tutor -->
+                    <div id="tutor-view" class="hidden">
+                         <header class="flex items-center justify-between mb-8 pb-4 border-b-2 border-dashed">
+                            <div><h1 class="text-3xl font-bold text-slate-800">Panel del Tutor</h1><p class="text-slate-500">Visualiza y gestiona los partes de actividad.</p></div>
+                            <button id="tutor-back-btn" class="text-sm text-slate-600 hover:text-indigo-600 font-semibold"><i class="fas fa-arrow-left mr-1"></i> Volver</button>
+                        </header>
+                        <!-- ... (La vista del tutor se mantiene igual en estructura pero hereda los nuevos estilos) ... -->
+                        <div class="bg-slate-50/70 p-4 rounded-xl border mb-6">
+                            <div class="grid md:grid-cols-4 gap-4">
+                                <input type="text" id="filter-student" placeholder="Buscar por alumno..." class="rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-200">
+                                <input type="text" id="filter-company" placeholder="Buscar por empresa..." class="rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-200">
+                                <input type="date" id="filter-date-from" class="rounded-lg border-slate-300 text-slate-500 focus:border-indigo-500 focus:ring-indigo-200">
+                                <input type="date" id="filter-date-to" class="rounded-lg border-slate-300 text-slate-500 focus:border-indigo-500 focus:ring-indigo-200">
+                            </div>
+                             <div class="flex justify-between items-center mt-4 pt-4 border-t">
+                                <div><span class="text-sm font-semibold text-slate-600">Registros: <b id="record-count" class="text-indigo-600">0</b></span><span class="text-sm font-semibold ml-4 text-slate-600">Horas Totales: <b id="total-hours" class="text-indigo-600">0.00</b></span></div>
+                                <button id="export-csv-btn" class="bg-emerald-600 text-white text-sm font-bold py-2 px-4 rounded-lg hover:bg-emerald-700 transition-all shadow hover:shadow-md transform hover:-translate-y-0.5"><i class="fas fa-file-csv mr-2"></i> Exportar CSV</button>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-slate-100 text-xs text-slate-700 uppercase rounded-t-lg">
+                                    <tr><th scope="col" class="px-6 py-3 rounded-tl-lg">Fecha</th><th scope="col" class="px-6 py-3">Alumno</th><th scope="col" class="px-6 py-3">Empresa</th><th scope="col" class="px-6 py-3">Entrada/Salida</th><th scope="col" class="px-6 py-3">Horas</th><th scope="col" class="px-6 py-3">Actividad/Motivo</th><th scope="col" class="px-6 py-3 rounded-tr-lg">Justificante</th></tr>
+                                </thead>
+                                <tbody id="records-tbody">
+                                    <tr id="tutor-loading-row"><td colspan="7" class="text-center p-8"><div class="spinner mx-auto"></div></td></tr>
+                                    <tr id="tutor-no-data-row" class="hidden"><td colspan="7" class="text-center p-8 text-slate-500">Aún no hay ningún parte registrado.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
-                 <div class="flex justify-between items-center mt-4 pt-4 border-t">
-                    <div><span class="text-sm font-semibold">Registros: <b id="record-count">0</b></span><span class="text-sm font-semibold ml-4">Horas Totales: <b id="total-hours">0.00</b></span></div>
-                    <button id="export-csv-btn" class="bg-green-600 text-white text-sm font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">Exportar CSV</button>
-                </div>
-            </div>
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-x-auto">
-                <table class="w-full text-sm text-left">
-                    <thead class="bg-slate-50 text-xs text-slate-700 uppercase">
-                        <tr><th scope="col" class="px-6 py-3">Fecha</th><th scope="col" class="px-6 py-3">Alumno</th><th scope="col" class="px-6 py-3">Empresa</th><th scope="col" class="px-6 py-3">Entrada/Salida</th><th scope="col" class="px-6 py-3">Horas</th><th scope="col" class="px-6 py-3">Actividad/Motivo</th><th scope="col" class="px-6 py-3">Justificante</th></tr>
-                    </thead>
-                    <tbody id="records-tbody">
-                        <tr id="tutor-loading-row"><td colspan="7" class="text-center p-8"><div class="spinner mx-auto"></div></td></tr>
-                        <tr id="tutor-no-data-row" class="hidden"><td colspan="7" class="text-center p-8 text-slate-500">No hay registros para mostrar.</td></tr>
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
@@ -110,109 +178,113 @@
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
         // --- CONFIGURACIÓN DE SUPABASE ---
-        const SUPABASE_URL = 'https://belsjuyzcdffyfgleoco.supabase.co';
+        const SUPABASE_URL = 'https://belsjuyzcdffyfgleoco.supabase.co'; 
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJlbHNqdXl6Y2RmZnlmZ2xlb2NvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTczMjYxMzEsImV4cCI6MjA3MjkwMjEzMX0.zeOW4x9veTddouww3FLe6z7d77X3RdDLB9-hNHD6n5w';
 
         // --- INICIALIZACIÓN Y LÓGICA ---
-        if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-            document.getElementById('loading-view').innerHTML = '<p class="text-red-500 text-center font-semibold">Error: La configuración de Supabase no se ha encontrado.<br>Por favor, sigue la guía para configurar el archivo.</p>';
-        }
-
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let allRecords = [];
         let recordsSubscription = null;
 
+        // --- SELECTORES DOM (simplificados) ---
         const DOMElements = {
             loadingView: document.getElementById('loading-view'),
             roleSelectionView: document.getElementById('role-selection-view'),
+            mainContentView: document.getElementById('main-content-view'),
             studentView: document.getElementById('student-view'),
             tutorView: document.getElementById('tutor-view'),
-            selectStudentBtn: document.getElementById('select-student-btn'),
-            selectTutorBtn: document.getElementById('select-tutor-btn'),
-            studentBackBtn: document.getElementById('student-back-btn'),
-            tutorBackBtn: document.getElementById('tutor-back-btn'),
-            practiceForm: document.getElementById('practice-form'),
-            absenceCheckbox: document.getElementById('absence-checkbox'),
-            attendanceFields: document.getElementById('attendance-fields'),
-            absenceFields: document.getElementById('absence-fields'),
-            startTime: document.getElementById('start-time'),
-            endTime: document.getElementById('end-time'),
-            hoursComputed: document.getElementById('hours-computed'),
-            recordsTbody: document.getElementById('records-tbody'),
-            tutorLoadingRow: document.getElementById('tutor-loading-row'),
-            tutorNoDataRow: document.getElementById('tutor-no-data-row'),
-            toast: document.getElementById('toast-notification'),
-            submitButton: document.getElementById('submit-button'),
-            submitButtonText: document.getElementById('submit-button-text'),
-            submitSpinner: document.getElementById('submit-spinner'),
+            // ... (el resto de selectores son los mismos)
         };
-        
-        // --- LÓGICA DE LA APP (adaptada para Supabase) ---
-        
+
+        // --- LÓGICA DE NAVEGACIÓN Y VISTAS (con nuevo diseño) ---
+        const switchView = (view) => {
+            if (!SUPABASE_URL) return;
+            DOMElements.loadingView.classList.add('hidden');
+            DOMElements.roleSelectionView.classList.add('hidden');
+            DOMElements.mainContentView.classList.add('hidden');
+            
+            if (view === 'role-selection-view') {
+                DOMElements.roleSelectionView.classList.remove('hidden');
+            } else {
+                DOMElements.mainContentView.classList.remove('hidden');
+                DOMElements.studentView.classList.add('hidden');
+                DOMElements.tutorView.classList.add('hidden');
+                document.getElementById(view).classList.remove('hidden');
+            }
+        };
+
+        const showRoleSelection = () => {
+             if (recordsSubscription) {
+                supabase.removeChannel(recordsSubscription);
+                recordsSubscription = null;
+            }
+            switchView('role-selection-view');
+        };
+
+        // --- El resto del script es funcionalmente idéntico a la versión anterior ---
+        // ... (pegado aquí para que el archivo sea completo y funcional)
+        const showStudentView = () => switchView('student-view');
+        const showTutorView = () => {
+            switchView('tutor-view');
+            listenToRecords();
+        };
+        const practiceForm = document.getElementById('practice-form');
+        const absenceCheckbox = document.getElementById('absence-checkbox');
+        const attendanceFields = document.getElementById('attendance-fields');
+        const absenceFields = document.getElementById('absence-fields');
+        const startTime = document.getElementById('start-time');
+        const endTime = document.getElementById('end-time');
+        const hoursComputed = document.getElementById('hours-computed');
+        const recordsTbody = document.getElementById('records-tbody');
+        const tutorLoadingRow = document.getElementById('tutor-loading-row');
+        const tutorNoDataRow = document.getElementById('tutor-no-data-row');
+        const toast = document.getElementById('toast-notification');
+        const submitButton = document.getElementById('submit-button');
+        const submitButtonText = document.getElementById('submit-button-text');
+        const submitSpinner = document.getElementById('submit-spinner');
+
         let sessionId = localStorage.getItem('supabase_session_id');
         if (!sessionId) {
             sessionId = `anon_${Date.now()}_${Math.random().toString(36).substring(2)}`;
             localStorage.setItem('supabase_session_id', sessionId);
         }
 
-        const switchView = (view) => {
-            if (!SUPABASE_URL) return;
-            DOMElements.loadingView.classList.add('hidden');
-            DOMElements.roleSelectionView.classList.add('hidden');
-            DOMElements.studentView.classList.add('hidden');
-            DOMElements.tutorView.classList.add('hidden');
-            document.getElementById(view).classList.remove('hidden');
-        };
-
-        const showRoleSelection = () => {
-            if (recordsSubscription) {
-                supabase.removeChannel(recordsSubscription);
-                recordsSubscription = null;
-            }
-            switchView('role-selection-view');
-        };
-        const showStudentView = () => switchView('student-view');
-        const showTutorView = () => {
-            switchView('tutor-view');
-            listenToRecords();
-        };
-
         const initStudentView = () => {
             document.getElementById('practice-date').value = new Date().toISOString().slice(0, 10);
-            DOMElements.absenceCheckbox.addEventListener('change', toggleAbsenceFields);
-            DOMElements.practiceForm.addEventListener('submit', handleFormSubmit);
-            [DOMElements.startTime, DOMElements.endTime].forEach(el => el.addEventListener('input', computeHours));
+            absenceCheckbox.addEventListener('change', toggleAbsenceFields);
+            practiceForm.addEventListener('submit', handleFormSubmit);
+            [startTime, endTime].forEach(el => el.addEventListener('input', computeHours));
             toggleAbsenceFields();
         };
 
         const toggleAbsenceFields = () => {
-            const isAbsent = DOMElements.absenceCheckbox.checked;
-            DOMElements.attendanceFields.classList.toggle('hidden', isAbsent);
-            DOMElements.absenceFields.classList.toggle('hidden', !isAbsent);
+            const isAbsent = absenceCheckbox.checked;
+            attendanceFields.classList.toggle('hidden', isAbsent);
+            absenceFields.classList.toggle('hidden', !isAbsent);
             computeHours();
         };
 
         const computeHours = () => {
-            if (DOMElements.absenceCheckbox.checked) {
-                DOMElements.hoursComputed.textContent = '0.00';
+            if (absenceCheckbox.checked) {
+                hoursComputed.textContent = '0.00';
                 return;
             }
-            const start = DOMElements.startTime.value;
-            const end = DOMElements.endTime.value;
+            const start = startTime.value;
+            const end = endTime.value;
             if (start && end) {
                 const startMinutes = parseInt(start.split(':')[0]) * 60 + parseInt(start.split(':')[1]);
                 const endMinutes = parseInt(end.split(':')[0]) * 60 + parseInt(end.split(':')[1]);
                 const diff = Math.max(0, endMinutes - startMinutes);
-                DOMElements.hoursComputed.textContent = (diff / 60).toFixed(2);
+                hoursComputed.textContent = (diff / 60).toFixed(2);
             } else {
-                DOMElements.hoursComputed.textContent = '0.00';
+                hoursComputed.textContent = '0.00';
             }
         };
 
         const setSubmitButtonState = (isLoading) => {
-            DOMElements.submitButton.disabled = isLoading;
-            DOMElements.submitButtonText.classList.toggle('hidden', isLoading);
-            DOMElements.submitSpinner.classList.toggle('hidden', !isLoading);
+            submitButton.disabled = isLoading;
+            submitButtonText.classList.toggle('hidden', isLoading);
+            submitSpinner.classList.toggle('hidden', !isLoading);
         };
         
         const handleFormSubmit = async (e) => {
@@ -253,17 +325,14 @@
                 fileStatusEl.textContent = 'Archivo subido con éxito.';
             }
 
-            const isAbsent = DOMElements.absenceCheckbox.checked;
+            const isAbsent = absenceCheckbox.checked;
             const record = {
-                studentName,
-                companyName,
-                practiceDate,
-                isAbsent,
-                startTime: isAbsent ? null : DOMElements.startTime.value,
-                endTime: isAbsent ? null : DOMElements.endTime.value,
+                studentName, companyName, practiceDate, isAbsent,
+                startTime: isAbsent ? null : startTime.value,
+                endTime: isAbsent ? null : endTime.value,
                 activity: isAbsent ? null : document.getElementById('activity-description').value.trim(),
                 absenceReason: isAbsent ? document.getElementById('absence-reason').value.trim() : null,
-                hours: parseFloat(DOMElements.hoursComputed.textContent) || 0,
+                hours: parseFloat(hoursComputed.textContent) || 0,
                 justification_path: justificationPath,
                 user_id: sessionId 
             };
@@ -274,8 +343,8 @@
                 console.error("Error guardando el parte:", error);
                 showToast('Error al guardar. Inténtalo de nuevo.', 'bg-red-500');
             } else {
-                showToast('Parte guardado con éxito', 'bg-green-600');
-                DOMElements.practiceForm.reset();
+                showToast('Parte guardado con éxito', 'bg-emerald-600');
+                practiceForm.reset();
                 document.getElementById('practice-date').value = new Date().toISOString().slice(0, 10);
                 toggleAbsenceFields();
             }
@@ -293,7 +362,7 @@
             const { data, error } = await supabase.from('practicas').select('*').order('practiceDate', { ascending: false });
             if (error) {
                 console.error("Error cargando datos:", error);
-                DOMElements.recordsTbody.innerHTML = '<tr><td colspan="7" class="text-center p-8 text-red-500">Error al cargar los datos.</td></tr>';
+                recordsTbody.innerHTML = '<tr><td colspan="7" class="text-center p-8 text-red-500">Error al cargar los datos.</td></tr>';
                 return;
             }
             allRecords = data;
@@ -301,18 +370,16 @@
         }
 
         const listenToRecords = () => {
-            DOMElements.tutorLoadingRow.classList.remove('hidden');
-            DOMElements.tutorNoDataRow.classList.add('hidden');
-            DOMElements.recordsTbody.innerHTML = '';
-            DOMElements.recordsTbody.appendChild(DOMElements.tutorLoadingRow);
+            tutorLoadingRow.classList.remove('hidden');
+            tutorNoDataRow.classList.add('hidden');
+            recordsTbody.innerHTML = '';
+            recordsTbody.appendChild(tutorLoadingRow);
 
             fetchAndRender();
 
             if (recordsSubscription) supabase.removeChannel(recordsSubscription);
             recordsSubscription = supabase.channel('public:practicas')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'practicas' }, (payload) => {
-                    fetchAndRender(); 
-                })
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'practicas' }, (payload) => fetchAndRender())
                 .subscribe();
         };
         
@@ -322,50 +389,46 @@
             const fromFilter = document.getElementById('filter-date-from').value;
             const toFilter = document.getElementById('filter-date-to').value;
 
-            const filteredRecords = allRecords.filter(r => {
-                const studentMatch = r.studentName.toLowerCase().includes(studentFilter);
-                const companyMatch = r.companyName.toLowerCase().includes(companyFilter);
-                const dateMatch = (!fromFilter || r.practiceDate >= fromFilter) && (!toFilter || r.practiceDate <= toFilter);
-                return studentMatch && companyMatch && dateMatch;
-            });
+            const filteredRecords = allRecords.filter(r => 
+                r.studentName.toLowerCase().includes(studentFilter) &&
+                r.companyName.toLowerCase().includes(companyFilter) &&
+                (!fromFilter || r.practiceDate >= fromFilter) && 
+                (!toFilter || r.practiceDate <= toFilter)
+            );
 
-            DOMElements.tutorLoadingRow.classList.add('hidden');
-            DOMElements.recordsTbody.innerHTML = '';
+            tutorLoadingRow.classList.add('hidden');
+            recordsTbody.innerHTML = '';
 
             if (filteredRecords.length === 0) {
-                DOMElements.tutorNoDataRow.classList.remove('hidden');
-                DOMElements.recordsTbody.appendChild(DOMElements.tutorNoDataRow);
-            } else {
-                 DOMElements.tutorNoDataRow.classList.add('hidden');
+                tutorNoDataRow.classList.remove('hidden');
+                recordsTbody.appendChild(tutorNoDataRow);
             }
             
             let totalHours = 0;
             filteredRecords.forEach(r => {
                 totalHours += r.hours;
                 const tr = document.createElement('tr');
-                tr.className = "bg-white border-b hover:bg-slate-50";
+                tr.className = "bg-white border-b hover:bg-slate-50/70 transition-colors";
                 
                 const absenceClass = r.isAbsent ? 'text-red-600' : '';
-                const activityText = r.isAbsent ? `<b>Ausencia:</b> ${r.absenceReason || 'Sin motivo'}` : r.activity;
+                const activityText = r.isAbsent ? `<span class="font-semibold">Ausencia:</span> ${r.absenceReason || 'Sin motivo'}` : r.activity;
                 
                 let justificationLink = '---';
                 if(r.justification_path) {
                     const { data } = supabase.storage.from('justificantes').getPublicUrl(r.justification_path);
-                    if(data && data.publicUrl) {
-                        justificationLink = `<a href="${data.publicUrl}" target="_blank" class="text-blue-600 hover:underline">Ver</a>`;
-                    }
+                    if(data && data.publicUrl) justificationLink = `<a href="${data.publicUrl}" target="_blank" class="text-indigo-600 hover:underline font-semibold">Ver archivo</a>`;
                 }
 
                 tr.innerHTML = `
-                    <td class="px-6 py-4 font-medium ${absenceClass}">${r.practiceDate}</td>
+                    <td class="px-6 py-4 font-medium text-slate-900 ${absenceClass}">${r.practiceDate}</td>
                     <td class="px-6 py-4">${r.studentName}</td>
                     <td class="px-6 py-4">${r.companyName}</td>
-                    <td class="px-6 py-4 ${absenceClass}">${r.isAbsent ? '---' : `${r.startTime || ''} - ${r.endTime || ''}`}</td>
-                    <td class="px-6 py-4 font-semibold ${absenceClass}">${r.hours.toFixed(2)}</td>
-                    <td class="px-6 py-4 max-w-xs truncate" title="${r.isAbsent ? r.absenceReason : r.activity}">${activityText}</td>
+                    <td class="px-6 py-4 ${absenceClass}">${r.isAbsent ? 'N/A' : `${r.startTime || ''} - ${r.endTime || ''}`}</td>
+                    <td class="px-6 py-4 font-semibold text-slate-800 ${absenceClass}">${r.hours.toFixed(2)}</td>
+                    <td class="px-6 py-4 max-w-xs text-slate-600 truncate" title="${r.isAbsent ? r.absenceReason : r.activity}">${activityText}</td>
                     <td class="px-6 py-4">${justificationLink}</td>
                 `;
-                DOMElements.recordsTbody.appendChild(tr);
+                recordsTbody.appendChild(tr);
             });
 
             document.getElementById('record-count').textContent = filteredRecords.length;
@@ -380,14 +443,8 @@
                     const { data } = supabase.storage.from('justificantes').getPublicUrl(r.justification_path);
                     if(data && data.publicUrl) justificationUrl = data.publicUrl;
                 }
-                return [
-                    r.practiceDate, r.studentName, r.companyName, r.isAbsent ? 'SI' : 'NO',
-                    r.startTime, r.endTime, r.hours.toFixed(2),
-                    `"${(r.activity || '').replace(/"/g, '""')}"`, `"${(r.absenceReason || '').replace(/"/g, '""')}"`,
-                    justificationUrl
-                ];
+                return [ r.practiceDate, r.studentName, r.companyName, r.isAbsent ? 'SI' : 'NO', r.startTime, r.endTime, r.hours.toFixed(2), `"${(r.activity || '').replace(/"/g, '""')}"`, `"${(r.absenceReason || '').replace(/"/g, '""')}"`, justificationUrl ];
             });
-
             let csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
@@ -399,15 +456,15 @@
         };
 
         const showToast = (message, className) => {
-            DOMElements.toast.textContent = message;
-            DOMElements.toast.className = `toast show ${className}`;
-            setTimeout(() => { DOMElements.toast.className = 'toast'; }, 3000);
+            toast.textContent = message;
+            toast.className = `toast show ${className}`;
+            setTimeout(() => { toast.className = 'toast'; }, 3000);
         };
 
-        DOMElements.selectStudentBtn.addEventListener('click', () => showStudentView());
-        DOMElements.selectTutorBtn.addEventListener('click', () => showTutorView());
-        DOMElements.studentBackBtn.addEventListener('click', showRoleSelection);
-        DOMElements.tutorBackBtn.addEventListener('click', showRoleSelection);
+        document.getElementById('select-student-btn').addEventListener('click', showStudentView);
+        document.getElementById('select-tutor-btn').addEventListener('click', showTutorView);
+        document.getElementById('student-back-btn').addEventListener('click', showRoleSelection);
+        document.getElementById('tutor-back-btn').addEventListener('click', showRoleSelection);
 
         if (SUPABASE_URL) {
             initStudentView();
